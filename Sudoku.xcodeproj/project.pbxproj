@@ -53,6 +53,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		01148D131C4CF2E000F3F993 /* Solvers */ = {
+			isa = PBXGroup;
+			children = (
+				01628CA61C46BB8000B522C6 /* SimulatedAnnealingSolver.swift */,
+				01628CAA1C46BEA200B522C6 /* DeepFirstSolver.swift */,
+			);
+			name = Solvers;
+			sourceTree = "<group>";
+		};
 		01628C8D1C45828400B522C6 = {
 			isa = PBXGroup;
 			children = (
@@ -74,9 +83,8 @@
 			children = (
 				01628C991C45828400B522C6 /* main.swift */,
 				01AA042A1C4C18A100BC88A6 /* Global.swift */,
-				01628CA61C46BB8000B522C6 /* SimulatedAnnealingSolver.swift */,
+				01148D131C4CF2E000F3F993 /* Solvers */,
 				01628CA81C46BE6100B522C6 /* SudokuGenerator.swift */,
-				01628CAA1C46BEA200B522C6 /* DeepFirstSolver.swift */,
 				01628CA01C45828F00B522C6 /* Cell.swift */,
 				01628CA21C4582BD00B522C6 /* SudokuDifficulty.swift */,
 				01628CA41C4582F100B522C6 /* SudokuBoard.swift */,

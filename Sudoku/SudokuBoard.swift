@@ -8,28 +8,27 @@
 
 import Foundation
 
+public let SudokuSize = 9
+public let SudokuColumnSize = 3
+
 public class SudokuBoard {
     
-    public static let SIZE = 9
+    public let SIZE = 9
+    public let COLSIZE = 3
     
-    private var grid = [[Int]]()
+    private var grid = [[Int]](count: SudokuSize, repeatedValue: [Int](count: SudokuSize, repeatedValue: 0))
     
     public var difficulty:SudokuDifficulty = .Easy
     
-    private func setup() {
-        let emptyRow = Array<Int>(count: SudokuBoard.SIZE, repeatedValue: 0)
-        grid = Array<[Int]>(count: SudokuBoard.SIZE, repeatedValue: emptyRow)
-    }
     
     public init(cells:[Cell]) {
-        setup()
         for cell in cells {
             grid[cell.row][cell.col] = cell.val
         }
     }
     
-    public init() {
-        setup()
+    public convenience init() {
+        self.init(cells: [])
     }
     
     public func emptyCells() -> [Cell] {
@@ -64,13 +63,16 @@ public class SudokuBoard {
     }
     
     public func isValid(cell:Cell) -> Bool {
+        let previous = self[cell.row, cell.col]
+        defer { self[cell.row, cell.col] = previous }
+        
         return checkRow(cell.row, num: cell.val)
             && checkCol(cell.col, num: cell.val)
             && checkBox(row: cell.row, col: cell.col, num: cell.val)
     }
 
     private func checkRow(row: Int, num: Int) -> Bool {
-        for col in 0..<SudokuBoard.SIZE {
+        for col in 0..<SudokuSize {
             if (self[row, col] == num) {
                 return false
             }
@@ -79,7 +81,7 @@ public class SudokuBoard {
     }
 
     private func checkCol(col: Int, num: Int) -> Bool {
-        for row in 0..<SudokuBoard.SIZE {
+        for row in 0..<SudokuSize {
             if (self[row, col] == num) {
                 return false
             }
@@ -88,12 +90,12 @@ public class SudokuBoard {
     }
     
     private func checkBox(row row:Int, col:Int, num:Int) -> Bool {
-        let row = (row / 3) * 3
-        let col = (col / 3) * 3
+        let startRow = (row / SudokuColumnSize) * SudokuColumnSize
+        let startCol = (col / SudokuColumnSize) * SudokuColumnSize
         
-        for (var r = 0; r < 3; r++) {
-            for (var c = 0; c < 3; c++) {
-                if (self[row + r, col + c] == num) {
+        for rowOffset in 0..<SudokuColumnSize {
+            for colOffset in 0..<SudokuColumnSize {
+                if (self[startRow + rowOffset, startCol + colOffset] == num) {
                     return false
                 }
             }
@@ -122,10 +124,9 @@ extension SudokuBoard : SequenceType {
     public func generate() -> Generator {
         var index = 0
         var cells = [Cell]()
-        for row in 0..<SudokuBoard.SIZE {
-            for col in 0..<SudokuBoard.SIZE {
-                let value = self[row, col] ?? 0
-                cells.append(Cell(row:row, col:col, val:value))
+        for (rowIndex ,row) in grid.enumerate() {
+            for (colIndex, cellValue) in row.enumerate() {
+                cells.append(Cell(row:rowIndex, col:colIndex, val:cellValue))
             }
         }
         

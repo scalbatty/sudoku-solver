@@ -46,3 +46,11 @@ extension Cell : Hashable {
         }
     }
 }
+
+public func isEmpty(cell:Cell) -> Bool {
+    return cell.isEmpty
+}
+
+public func hasValue(cell:Cell) -> Bool {
+    return !cell.isEmpty
+}

@@ -56,9 +56,6 @@ while (true) {
             
             let solver = DeepFirstSearchSolver()
             let solution = solver.solve(board: temp)
-
-//            let solution = temp.clone()
-//            annealingSolver.simulatedAnnealingSolve(solution)
             
             print("Solution Found")
             displaySudoku(solution)

@@ -15,26 +15,35 @@ public protocol SudokuSolver {
 public class DeepFirstSearchSolver : SudokuSolver {
     
     public func solve(board sourceBoard: SudokuBoard) -> SudokuBoard {
-        var visited = [Cell]()
+        
+        var visited =  sourceBoard.filter(hasValue)
         var toVisit = [Cell]()
         
-        let start = (random() % 10) + 1
-        toVisit.append(Cell(row: 0, col: 0, val: start))
+        var sudoku = SudokuBoard(cells: visited)
+        
+        
+        guard sudoku.contains(isEmpty) else { return sudoku }
+        
+        let firstEmpty = sudoku.emptyCells().first!
+        let start = Array(1...9)
+            .shuffle()
+            .filter({ x in sudoku.isValid(Cell(row: firstEmpty.row, col: firstEmpty.col, val: x))}).first!
+        
+        toVisit.append(Cell(row: firstEmpty.row, col: firstEmpty.col, val: start))
         
         while (!toVisit.isEmpty) {
             var current = toVisit.popLast()!
             visited.append(current)
             
-            if (current.row == SudokuBoard.SIZE - 1 && current.col == SudokuBoard.SIZE - 1) {
-                return SudokuBoard(cells: visited)
-            }
+            sudoku = SudokuBoard(cells: visited)
+            guard sudoku.contains(isEmpty) else { return sudoku }
             
-            current = current.col < SudokuBoard.SIZE - 1
-                ? Cell(row: current.row, col: current.col + 1)
-                : Cell(row: current.row + 1, col: 0)
+            current = sudoku.emptyCells().first!
             
-            let sudoku = SudokuBoard(cells: visited)
-            let neighbours = Array(1...9).shuffle().filter({ x in sudoku.isValid(Cell(row: current.row, col: current.col, val: x))}).map({x -> Cell in return Cell(row: current.row, col: current.col, val: x)})
+            let neighbours = Array(1...9)
+                .shuffle()
+                .filter({ x in sudoku.isValid(Cell(row: current.row, col: current.col, val: x))})
+                .map({x -> Cell in return Cell(row: current.row, col: current.col, val: x)})
             
             if (neighbours.isEmpty) {
                 if (toVisit.isEmpty) {
@@ -50,7 +59,7 @@ public class DeepFirstSearchSolver : SudokuSolver {
                 neighbours.forEach({ cell in toVisit.append(cell) })
             }
         }
-        return SudokuBoard()
+        return sudoku
     }
     
 }
